@@ -1,26 +1,119 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react"
+import ReactDOM, { unstable_batchedUpdates, flushSync } from "react-dom"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface stateInterface {
+  readonly num: number
 }
 
-export default App;
+class App extends React.Component {
+  state: stateInterface = {
+    num: 1,
+  }
+
+  // 同步更新
+
+  batchUpdate = () => {
+    this.setState({
+      num: 2,
+    })
+    this.setState({
+      num: 3,
+    })
+    console.log(this.state.num)
+    this.setState(
+      (state: stateInterface, props) => {
+        console.log(state.num)
+        return {
+          num: 4,
+        }
+      },
+      () => {
+        console.log(this.state.num)
+      }
+    )
+    console.log(this.state.num)
+    this.setState(
+      {
+        num: 5,
+      },
+      () => {
+        console.log(this.state.num)
+      }
+    )
+    console.log(this.state.num)
+  }
+
+  asyncBatch1 = () => {
+    setTimeout(() => {
+      this.batchUpdate()
+    }, 50)
+  }
+
+  asyncBatch2 = () => {
+    setTimeout(() => {
+      unstable_batchedUpdates(() => {
+        this.batchUpdate()
+      })
+    }, 50)
+  }
+
+  componentDidMount() {
+    this.asyncBatch1()
+  }
+
+  flushSyncBatch = () => {
+    // this.setState({
+    //   num: 2,
+    // })
+    flushSync(() => {
+      this.setState({
+        num: 3,
+      })
+    })
+    this.setState({
+      num: 4,
+    })
+    this.setState({
+      num: 5,
+    })
+  }
+
+  render() {
+    console.log(this.state.num)
+    return (
+      <div className="App">
+        <button onClick={this.flushSyncBatch}>flush button</button>
+        {this.state.num}
+      </div>
+    )
+  }
+}
+
+export default App
+
+export function Index(props: any) {
+  const [number, setNumber] = React.useState(0)
+  /* 监听 number 变化 */
+  React.useEffect(() => {
+    console.log("监听number变化，此时的number是:  " + number)
+  }, [number])
+  const handerClick = () => {
+    /* 批量更新 */
+    setNumber(1)
+    /** 高优先级更新 ，同时合并上下文中之前的更新操作**/
+    ReactDOM.flushSync(() => {
+      setNumber((state) => state + 1)
+    })
+    /* 滞后更新 ，批量更新规则被打破 */
+    setTimeout(() => {
+      setNumber(3)
+    })
+  }
+  console.log(number)
+  return (
+    <div>
+      <span> {number}</span>
+      <button onClick={handerClick}>number++</button>
+    </div>
+  )
+}
