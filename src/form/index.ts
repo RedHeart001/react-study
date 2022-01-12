@@ -1,4 +1,5 @@
 import Form from './form'
+import {FormItem,Input} from './formItem'
 export {
-    Form
+    Form,FormItem,Input
 }

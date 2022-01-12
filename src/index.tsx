@@ -1,8 +1,8 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
-import App, { Index } from "./App"
-import {Container} from './props'
+import App, { Container } from "./App"
+// import {Container} from './props'
 import reportWebVitals from "./reportWebVitals"
 
 ReactDOM.render(

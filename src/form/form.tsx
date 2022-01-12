@@ -13,12 +13,17 @@ type ChildProps = {
 } 
 
 type FormProps = {
-    children: Array<ChildProps & React.ReactNode>,
+    children: Array<ChildProps & React.ReactNode>
     [key:string]:any
 } & React.ReactNode;
 
+
 class Form extends React.Component<FormProps>{
-    state = {
+    state: {
+        formData: {
+            [key:string]:any
+        }
+    } = {
         formData:{}
     };
 
@@ -28,28 +33,37 @@ class Form extends React.Component<FormProps>{
 
 
     reset = () => {
-        this.setState({
-            formData:{}
-        })
+        const { formData } = this.state
+       Object.keys(formData).forEach(item=>{
+           formData[item] = ''
+       })
+       this.setState({
+           formData
+       })
     }
 
     setFormData = (key: string, value: any) => {
+        console.log(key, value);
         this.setState({
-            ...this.state.formData,
-            [key]:value
+            formData: {
+                ...this.state.formData,
+                [key]: value
+            }
         })
     }
 
     render(): React.ReactNode {
         const { children} = this.props;
-        const renderChildren:React.ReactNode[] = [];
+        const renderChildren: React.ReactNode[] = [];
+        console.log(this.state)
         React.Children.forEach(children, (child:ChildProps) => {
-            const { name = '',label = 'default label',children = []} = child.props;
-            if (name === 'formItem' && React.isValidElement(child)) {
+            if (child.type.displayName === 'formItem' && React.isValidElement(child)) {
+                const { name = '',label = '',children = []} = child.props;
                 renderChildren.push(React.cloneElement(child, {
-                    key: name,
-                    handleChange:this.setFormData,
-                    label
+                    name,
+                    handleChange: this.setFormData,
+                    label,
+                    value:this.state.formData[name] || ''
                 },children))
             }
         })
