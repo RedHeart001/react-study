@@ -2,12 +2,14 @@ import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
 import App, { Container } from "./App"
+import  { RefApp} from "./ref"
+import  { ContextApp} from "./context"
 // import {Container} from './props'
 import reportWebVitals from "./reportWebVitals"
 
 ReactDOM.render(
   <React.StrictMode>
-    <Container />
+    <ContextApp/>
   </React.StrictMode>,
   document.getElementById("root")
 )
