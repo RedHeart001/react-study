@@ -1,15 +1,17 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
+import Index from "./jsx"
 import App, { Container } from "./App"
 import  { RefApp} from "./ref"
 import  { ContextApp} from "./context"
+import  {RenderApp } from "./render"
 // import {Container} from './props'
 import reportWebVitals from "./reportWebVitals"
 
 ReactDOM.render(
   <React.StrictMode>
-    <ContextApp/>
+    <RenderApp/>
   </React.StrictMode>,
   document.getElementById("root")
 )
